@@ -87,6 +87,40 @@ func (trc *TestRedisCache) TestHashObject(t *testing.T) {
 	assert.Equal(t, expectedHash, hash, "Hash does not match expected value")
 }
 
+func (trc *TestRedisCache) TestWildCardDel(t *testing.T) {
+	ctx := context.Background()
+
+	mp := map[string]string{
+		"1_test_key1": "test_value1",
+		"1_test_key2": "test_value2",
+		"1_test_key3": "test_value3",
+	}
+
+	for k, v := range mp {
+		err := trc.Set(ctx, k, v, 0)
+		assert.NoError(t, err, "Error setting value to cache")
+	}
+
+	trc.Set(ctx, "key", "test_value", 0)
+
+	err := trc.DelWildCard(ctx, "1_*")
+	assert.NoError(t, err, "Error deleting wildcard keys from cache")
+
+	for k := range mp {
+		_, err := trc.Get(ctx, k)
+		assert.Error(t, err, "Value should have been deleted from cache")
+	}
+
+	_, err = trc.Get(ctx, "key")
+	assert.NoError(t, err, "Value should not have been deleted from cache")
+
+	err = trc.Del(ctx, "key")
+	assert.NoError(t, err, "Error deleting value from cache")
+
+	_, err = trc.Get(ctx, "key")
+	assert.Error(t, err, "Value should have been deleted from cache")
+}
+
 func TestCache(m *testing.T) {
 	// Setup test configuration
 	cfg := &Config{
@@ -101,5 +135,5 @@ func TestCache(m *testing.T) {
 	trc.TestSetGetDelete(m)
 	trc.TestHash(m)
 	trc.TestHashObject(m)
-
+	trc.TestWildCardDel(m)
 }

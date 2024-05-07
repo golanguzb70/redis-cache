@@ -14,6 +14,7 @@ type RedisCache interface {
 	Set(ctx context.Context, key string, value string, expiration int) error
 	Get(ctx context.Context, key string) (string, error)
 	Del(ctx context.Context, key string) error
+	DelWildCard(ctx context.Context, wildcard string) error
 	Ping(ctx context.Context) error
 	HashOject(obj interface{}) string
 	Hash(key string) string
@@ -36,7 +37,7 @@ func New(cfg *Config) RedisCache {
 }
 
 func (c *cache) Set(ctx context.Context, key string, value string, expiration int) error {
-	return c.client.Set(ctx, key, value, time.Duration(expiration) * time.Second).Err()
+	return c.client.Set(ctx, key, value, time.Duration(expiration)*time.Second).Err()
 }
 
 func (c *cache) Get(ctx context.Context, key string) (string, error) {
@@ -49,6 +50,21 @@ func (c *cache) Del(ctx context.Context, key string) error {
 
 func (c *cache) Ping(ctx context.Context) error {
 	return c.client.Ping(ctx).Err()
+}
+
+func (c *cache) DelWildCard(ctx context.Context, wildcard string) error {
+	keys, err := c.client.Keys(ctx, wildcard).Result()
+	if err != nil {
+		return err
+	}
+
+	for _, key := range keys {
+		if err := c.Del(ctx, key); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (c *cache) HashOject(obj interface{}) string {
