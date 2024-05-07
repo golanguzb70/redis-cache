@@ -1,6 +1,6 @@
 module github.com/golanguzb70/redis-cache
 
-go 1.22.2
+go 1.20
 
 require (
 	github.com/redis/go-redis/v9 v9.5.1
