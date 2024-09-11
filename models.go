@@ -2,8 +2,7 @@ package rediscache
 
 type Config struct {
 	RedisHost     string
-	RedisPort     string
+	RedisPort     int
+	RedisUsername string
 	RedisPassword string
 }
-
-

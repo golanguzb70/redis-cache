@@ -21,8 +21,9 @@ type TestRedisCache struct {
 
 // NewTestRedisCache creates a new RedisCache instance for testing
 func NewTestRedisCache(cfg *Config) *TestRedisCache {
+	cache, _ := New(cfg)
 	return &TestRedisCache{
-		RedisCache: New(cfg),
+		RedisCache: cache,
 	}
 }
 
@@ -125,8 +126,9 @@ func TestCache(m *testing.T) {
 	// Setup test configuration
 	cfg := &Config{
 		RedisHost:     "localhost",
-		RedisPort:     "6379",
+		RedisPort:     6379,
 		RedisPassword: "", // No password for testing
+		RedisUsername: "",
 	}
 	// Create RedisCache instance for testing
 	trc := NewTestRedisCache(cfg)
