@@ -28,8 +28,8 @@ type RedisCache interface {
 	DelWildCard(ctx context.Context, wildcard string) error
 	// Ping checks if the cache is available.
 	Ping(ctx context.Context) error
-	// HashOject generates a hash for the given object.
-	HashOject(obj interface{}) string
+	// HashObject generates a hash for the given object.
+	HashObject(obj interface{}) string
 	// Hash generates a hash for the given key.
 	Hash(key string) string
 }
@@ -105,9 +105,9 @@ func (c *cache) DelWildCard(ctx context.Context, wildcard string) error {
 }
 
 /*
-HashOject generates a hash for the given object.
+HashObject generates a hash for the given object.
 */
-func (c *cache) HashOject(obj interface{}) string {
+func (c *cache) HashObject(obj interface{}) string {
 	js, _ := json.Marshal(obj)
 	hasher := sha256.New()
 

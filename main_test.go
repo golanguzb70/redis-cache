@@ -84,7 +84,7 @@ func (trc *TestRedisCache) TestHashObject(t *testing.T) {
 
 	expectedHash := "f99d2e506f11e31bc9102307e3ab14e170fbce1dbd244fb2d38f9e5753fbb397"
 
-	hash := trc.HashOject(testObj)
+	hash := trc.HashObject(testObj)
 	assert.Equal(t, expectedHash, hash, "Hash does not match expected value")
 }
 
