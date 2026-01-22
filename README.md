@@ -59,10 +59,10 @@ if err != nil {
 
 ##### Del
 
-Delete a key from the cache:
+Delete keys from the cache:
 
 ```go
-err := cache.Del(ctx, key)
+err := cache.Del(ctx, keys)
 if err != nil {
     // handle error
 }
@@ -90,12 +90,12 @@ if err != nil {
 }
 ```
 
-##### HashOject
+##### HashObject
 
 Generate a hash for a given object:
 
 ```go
-hash := cache.HashOject(obj)
+hash := cache.HashObject(obj)
 ```
 
 ##### Hash

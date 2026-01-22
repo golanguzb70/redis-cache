@@ -16,8 +16,8 @@ type RedisCache interface {
 	Set(ctx context.Context, key string, value string, expiration int) error
 	// Get retrieves a key from the cache.
 	Get(ctx context.Context, key string) (string, error)
-	// Del deletes a key from the cache.
-	Del(ctx context.Context, key string) error
+	// Del deletes keys from the cache.
+	Del(ctx context.Context, keys ...string) error
 	/*
 		DelWildCard deletes all keys that match the wildcard pattern.
 		Patterns examples:
@@ -28,8 +28,8 @@ type RedisCache interface {
 	DelWildCard(ctx context.Context, wildcard string) error
 	// Ping checks if the cache is available.
 	Ping(ctx context.Context) error
-	// HashOject generates a hash for the given object.
-	HashOject(obj interface{}) string
+	// HashObject generates a hash for the given object.
+	HashObject(obj interface{}) string
 	// Hash generates a hash for the given key.
 	Hash(key string) string
 }
@@ -74,9 +74,9 @@ func (c *cache) Get(ctx context.Context, key string) (string, error) {
 	return c.client.Get(ctx, key).Result()
 }
 
-// Del deletes a key from the cache.
-func (c *cache) Del(ctx context.Context, key string) error {
-	return c.client.Del(ctx, key).Err()
+// Del deletes keys from the cache.
+func (c *cache) Del(ctx context.Context, keys ...string) error {
+	return c.client.Del(ctx, keys...).Err()
 }
 
 // Ping checks if the cache is available.
@@ -97,19 +97,17 @@ func (c *cache) DelWildCard(ctx context.Context, wildcard string) error {
 		return err
 	}
 
-	for _, key := range keys {
-		if err := c.Del(ctx, key); err != nil {
-			return err
-		}
+	if err := c.Del(ctx, keys...); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 /*
-HashOject generates a hash for the given object.
+HashObject generates a hash for the given object.
 */
-func (c *cache) HashOject(obj interface{}) string {
+func (c *cache) HashObject(obj interface{}) string {
 	js, _ := json.Marshal(obj)
 	hasher := sha256.New()
 
