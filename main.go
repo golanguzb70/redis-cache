@@ -76,6 +76,10 @@ func (c *cache) Get(ctx context.Context, key string) (string, error) {
 
 // Del deletes keys from the cache.
 func (c *cache) Del(ctx context.Context, keys ...string) error {
+	if len(keys) == 0 {
+		return nil
+	}
+
 	return c.client.Del(ctx, keys...).Err()
 }
 

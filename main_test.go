@@ -122,6 +122,21 @@ func (trc *TestRedisCache) TestWildCardDel(t *testing.T) {
 	assert.Error(t, err, "Value should have been deleted from cache")
 }
 
+func (trc *TestRedisCache) TestDeleteEmpty(t *testing.T) {
+	ctx := context.Background()
+
+	// test Del method with empty slice
+	err := trc.Del(ctx, []string{}...)
+	assert.NoError(t, err, "error while deleting empty slice")
+
+	err = trc.Del(ctx)
+	assert.NoError(t, err, "error while deleting empty slice")
+
+	// test DelWildCard method with empty data in Redis storage
+	err = trc.DelWildCard(ctx, "*")
+	assert.NoError(t, err, "error while deleting empty wildcard")
+}
+
 func TestCache(m *testing.T) {
 	// Setup test configuration
 	cfg := &Config{
@@ -138,4 +153,5 @@ func TestCache(m *testing.T) {
 	trc.TestHash(m)
 	trc.TestHashObject(m)
 	trc.TestWildCardDel(m)
+	trc.TestDeleteEmpty(m)
 }
